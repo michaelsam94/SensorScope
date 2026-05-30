@@ -1,0 +1,6 @@
+{
+  "name": "SensorScope",
+  "description": "Hardware diagnostic suite for real-time sensor, battery, and thermal stress testing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
