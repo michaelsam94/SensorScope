@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".SensorScopeApp"
@@ -28,7 +29,7 @@
         </activity>
 
         <service
-            android:name="com.example.feature.thermal_stress.ThermalStressService"
+            android:name="com.michael.sensorscope.feature.thermal_stress.ThermalStressService"
             android:foregroundServiceType="specialUse"
             android:exported="false">
             <property
@@ -38,7 +39,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.aistudio.sensorscope.uxqzp.provider"
+            android:authorities="com.michael.sensorscope.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

@@ -6,12 +6,19 @@ plugins {
   alias(libs.plugins.secrets)
 }
 
+if (gradle.startParameter.taskNames.any {
+    it.equals("generatePlayStoreAssets", ignoreCase = true) ||
+      it.contains("Roborazzi", ignoreCase = true)
+  }) {
+  extra["screenshot"] = true
+}
+
 android {
-  namespace = "com.example"
+  namespace = "com.michael.sensorscope"
   compileSdk { version = release(36) { minorApiLevel = 1 } }
 
   defaultConfig {
-    applicationId = "com.aistudio.sensorscope.uxqzp"
+    applicationId = "com.michael.sensorscope"
     minSdk = 24
     targetSdk = 36
     versionCode = 1
@@ -55,7 +62,37 @@ android {
     compose = true
     buildConfig = true
   }
-  testOptions { unitTests { isIncludeAndroidResources = true } }
+  testOptions {
+    unitTests {
+      isIncludeAndroidResources = true
+      all {
+        val screenshotTests = project.hasProperty("screenshot")
+        it.inputs.property("screenshotTestsEnabled", screenshotTests)
+        if (screenshotTests) {
+          it.maxParallelForks = 1
+          it.maxHeapSize = "2048m"
+          it.systemProperty("robolectric.pixelCopyRenderMode", "hardware")
+        }
+        it.useJUnit {
+          if (screenshotTests) {
+            includeCategories("com.michael.sensorscope.playstore.PlayStoreScreenshotTests")
+          } else {
+            excludeCategories("com.michael.sensorscope.playstore.PlayStoreScreenshotTests")
+          }
+        }
+      }
+    }
+  }
+}
+
+roborazzi {
+  outputDir.set(file("${rootProject.projectDir}/play-store"))
+}
+
+tasks.register("generatePlayStoreAssets") {
+  group = "publishing"
+  description = "Generate Play Store screenshots, feature graphic, and icon via Roborazzi"
+  dependsOn("recordRoborazziDebug")
 }
 
 // Configure the Secrets Gradle Plugin to use .env and .env.example files
